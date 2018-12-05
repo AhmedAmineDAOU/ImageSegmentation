@@ -1,0 +1,71 @@
+IFT6150 Automne 2018 TP5
+
+L'énoncé du tp5 ainsi que les programmes fournis se trouvent sur le site 
+du cours:
+
+http://www.iro.umontreal.ca/~mignotte/ift6150.html
+
+
+Le TP5 est à remettre avant 23:59 le 14 Decembre 2018
+
+Pénalité de 10% par 24h de retard.
+
+Vous devez fournir les programmes suivants:
+
+     TpIFT6150-5-A.c
+     TpIFT6150-5-B.c
+     TpIFT6150-5-C.c
+     TpIFT6150-5-D.c
+
+qui doivent produire les images demandées dans l'énoncé du TP5.
+
+Pour la question A,
+- on doit pouvoir entrer le seuil manuellement.
+- Le champ d'étiquettes ainsi que l'histogramme doivent être
+  affiches.
+
+Pour la question B, KMoyenne
+- le numéro de l'itération et la moyenne des deux classes doivent être
+  affichée a chaque itération
+- Le champ d'étiquettes doit être affiché après que l'algorithme ait
+  converge
+
+Pour la question B, KMoyenne+ICM
+- le numéro de l'itération, le nombre de pixels modifiés et l'énergie
+  globale doivent être affiches a chaque itération
+- Le champ d'étiquettes doit être affiché après que l'algorithme ait
+  converge
+
+Pour la question D, KMoyenne+Recuit simule
+- le numéro de l'itération, la température et l'énergie globale
+  doivent être affiches a chaque itération.
+- Le champ d'étiquettes doit être affiché après que l'algorithme ait
+  converge
+
+Les programmes doivent compiler sous Linux.
+
+Le maximum des points alloués au TP5 est indiqué ci-dessous:
+
+
+Implémentation et exécution des algorithmes (100 points)
+===========================================
+
+ Style de programmation : (10 points)
+ Programme A: ( 5 points)
+ Programme B: (25 points)
+ Programme C: (25 points)
+ Programme D: (35 points)
+
+Rapport : (0 point)
+=======
+
+Il n'y pas de rapport écrit à remettre.
+
+Total : 100 points 
+
+
+
+
+
+
+          
