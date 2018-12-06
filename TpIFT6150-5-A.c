@@ -43,13 +43,14 @@ int main(int argc, char *argv[])
 		printf("Usage :\n\t TpIFT6150-4-A image_a_segmenter\n\n");
 		return 0;
 	}
- 
-  printf("Entrez un seuil: ");
-  scanf("%d",&seuilMV);
   /*y= image passee en argument*/
   /* Ouvrir l'image d'entree */
   y = LoadImagePgm(argv[argc - 1], &length, &width);
   x = fmatrix_allocate_2d(length, width);
+  
+  printf("Entrez un seuil: ");
+  scanf("%d",&seuilMV);
+ 
   /* Seuil */
   for( i=0 ; i < length ; i++ )
     for( j=0 ; j < width ; j++ ) {
@@ -61,6 +62,7 @@ int main(int argc, char *argv[])
 
   float* histo = malloc(sizeof(float) * 255);
   compute_histo(y, length, width, histo);
+  SaveImagePgm(NAME_IMG_OUT1, x,length,width);
   SaveHistoPgm(NAME_IMG_OUT2, histo);
     
   /* Liberer la memoire des images */
