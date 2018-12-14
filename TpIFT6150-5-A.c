@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
   /* Seuil */
   for( i=0 ; i < length ; i++ )
     for( j=0 ; j < width ; j++ ) {
-      if ( y[i][j] > seuilMV )//if pixel > seuil 
+      if ( y[i][j] < seuilMV )//if pixel < seuil 
             x[i][j]=0;// pixel est blanc
       else  x[i][j]=255;
            

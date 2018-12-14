@@ -2,7 +2,7 @@
 /* Prog    : ProgDemoN.c                                */
 /* Auteur  : Ahmed Amine DAOU & Wrushabh Warshe         */
 /* Date    :                                            */
-/* version :                                            */ 
+/* version :                                            */
 /* langage : C                                          */
 /* labo    : DIRO                                       */
 /*------------------------------------------------------*/
@@ -18,25 +18,23 @@
 #include "FonctionDemo5.h"
 
 /*------------------------------------------------*/
-/* DEFINITIONS -----------------------------------*/      
+/* DEFINITIONS -----------------------------------*/
 /*------------------------------------------------*/
 #define NAME_IMG_OUT "B-segmentation"
 
 /*------------------------------------------------*/
-/* PROGRAMME PRINCIPAL   -------------------------*/                     
+/* PROGRAMME PRINCIPAL   -------------------------*/
 /*------------------------------------------------*/
 int main(int argc, char *argv[])
 {
-    int i=0/*kmeans compteur iterations*/,j;
-    int seuilMV;
-    float mean0, mean1, var0, var1; /* parametres statistiques des deux classes : a estimer  */
+    int i=0,j;
+
+    float mean0, mean1; /* parametres statistiques des deux classes : a estimer  */
     int length,width;
-    float* histo;
     int ok =0;
     int stop = 0;
     //kmeans compteur iterations
     /* Ouvrir l'image d'entree */
-   
 
     float** y;  /* image a segmenter */
     float** x;  /* champs d'etiquettes a estimer */
@@ -48,106 +46,86 @@ int main(int argc, char *argv[])
      printf("Usage :\n\t TpIFT6150-4-B image_a_segmenter\n\n");
      return 0;
     }
-  
-   
+
+
 
     /* Lancer l'algorithme des K-Moyennes */
 
-    // initialisation des moyennes 
+    // initialisation des moyennes
     float mean01 = -1, mean11 = -1;
-    histo = malloc(sizeof(float) * 255);
-    compute_histo(y, length, width, histo);
+    VectHist = malloc(sizeof(float) * 255);
+    compute_histo(y, length, width, VectHist);
 
 
 
-    //initialisation des moyenne en deux differentes valeurs
+    //initialisation des moyennes a deux differentes valeurs
     // de pixels entre 0 et 255
     while(ok==0){
-    srand(time(NULL));
-    mean0 = randomize() * 255;
-    mean1 = randomize() * 255;
-    if (mean0 > mean1) {//si la moyenne (obtenu with rand) de la classe noire est superieure
-
-      ok = 1;
-      tmp  = mean0;
-      mean0 = mean1;
-      mean1 = tmp;//permuter les valeurs
+        srand(time(NULL));
+        mean0 = randomize() * 255;
+        mean1 = randomize() * 255;
+        if (mean0 > mean1 ) {//si la moyenne (obtenu with rand) de la classe noire est superieure
+            ok = 1;
+            tmp  = mean0;
+            mean0 = mean1;
+            mean1 = tmp;//permuter les valeurs
+        }
+        else if (mean0 < mean1) ok =1;
     }
-    else if (mean0 < mean1) ok =1;
 
-   }
+    float sum0, sum1, nb_echantillon0, nb_echantillon1;
 
-    int debut_classe_1;
-    float sum0, sum1, total0, total1;
-    
-    while( stop == 0 ) {
-
+    while( stop == 0 ) {//iterer jusqu'a => clusters ne bougent plus
         sum0 = 0;
         sum1 = 0;
-        total0 = 0;
-        total1 = 0;
-        
-        debut_classe_1 = (mean1 - mean0) / 2.0; //+ mean0
+        nb_echantillon0 = 0;
+        nb_echantillon1 = 0;
 
-       
-        for(int i=0 ; i<debut_classe_1 ; i++ ) {
-            sum0   += i * histo[i];
-            total0 += histo[i];
+        for(int i=0 ; i< (mean1 - mean0) / 2.0 ; i++ ) {
+            sum0   += i * VectHist[i];
+            nb_echantillon0 += VectHist[i];
         }
 
-       
-        for(int i=debut_classe_1 ; i <= 255 ; i++ ) {
-            sum1   += i * histo[i];
-            total1 += histo[i];
+
+        for(int i= (mean1 - mean0) / 2.0 ; i <= 255 ; i++ ) {
+            sum1   += i * VectHist[i];
+            nb_echantillon1 += VectHist[i];
         }
 
-        mean01 = sum0 / total0;
-        mean11 = sum1 / total1;
+        //nouvelles moyennes
+        mean01 = sum0 / nb_echantillon0;
+        mean11 = sum1 / nb_echantillon1;
 
-        printf("%d%s%f %f\n", i, " moyennes update: ", mean01, mean11);
-        i++;
+        printf("%d%s%f %f\n", i, " update means: ", mean01, mean11);
+
         //on arrete d'iterer si les moyennes ne changents plus
-        if (mean01 == mean0 && mean11 == mean1)  stop = 1;
-       
+        if (mean01 == mean0 && mean11 == mean1)  stop = 1;//stop
+
         //ecraser les anciennes moyenne
         mean0 = mean01;
         mean1 = mean11;
+        i++;
     }
 
-    total0 = total1 = 0;
-
-    // Classe 0
-    for(i=0; i<debut_classe_1; i++) {
-        sum0 += histo[i] * SQUARE(i - mean0);
-        total0 += histo[i];
-    }
-    var0 = sum0 / total0;
-
-    // Classe 1
-    for(i=debut_classe_1; i<=255; i++) {
-        sum1 += histo[i] * SQUARE(i - mean1);
-        total1 += histo[i];
-    }
-    var1 = sum1 / total1;
-    
-    for(i=0; i<length; i++)
-        for(j=0; j<width; j++) {
-            x[i][j] = (y[i][j] > debut_classe_1) * 255;
+    for( i=0 ; i < length ; i++ )
+        for( j=0 ; j < width ; j++ ) {
+            if ( y[i][j] > (mean1 - mean0) / 2.0 )
+            x[i][j] =  255;
+            else
+            x[i][j] =  0;
         }
 
-    printf("%f %f\n", var0, var1);
-    
     /* Sauvegarde du champ d'etiquettes */
     SaveImagePgm(NAME_IMG_OUT, x, length, width);
-    
+
     /* Liberer la memoire des images */
     free_fmatrix_2d(x);
     free_fmatrix_2d(y);
 
     /*Commande systeme: visualisation de Ingout.pgm*/
-    system("display B-segmentation.pgm&"); 
-  
-    /*retour sans probleme*/ 
+    system("display B-segmentation.pgm&");
+
+    /*retour sans probleme*/
     printf("\n C'est fini ... \n\n\n");
-    return 0;    
+    return 0;
 }
