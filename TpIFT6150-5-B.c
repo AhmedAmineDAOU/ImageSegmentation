@@ -29,17 +29,14 @@ int main(int argc, char *argv[])
 {
     int i=0,j;
 
-    float mean0, mean1; /* parametres statistiques des deux classes : a estimer  */
-    int length,width;
-    int ok =0;
-    int stop = 0;
-    //kmeans compteur iterations
-    /* Ouvrir l'image d'entree */
-
+    float mean0, mean1,var0,var1,sum0, sum1, nb_echantillon0, nb_echantillon1,tmp;
+    float mean01 , mean11 ;
+    int length,width,ok =0,stop=0;
     float** y;  /* image a segmenter */
     float** x;  /* champs d'etiquettes a estimer */
     float*  VectHist;
-    float tmp;
+
+    /* Ouvrir l'image d'entree */
     y = LoadImagePgm(argv[argc - 1], &length, &width);
     x = fmatrix_allocate_2d(length, width);
     if(argc<2){
@@ -52,7 +49,7 @@ int main(int argc, char *argv[])
     /* Lancer l'algorithme des K-Moyennes */
 
     // initialisation des moyennes
-    float mean01 = -1, mean11 = -1;
+    
     VectHist = malloc(sizeof(float) * 255);
     compute_histo(y, length, width, VectHist);
 
@@ -73,7 +70,6 @@ int main(int argc, char *argv[])
         else if (mean0 < mean1) ok =1;
     }
 
-    float sum0, sum1, nb_echantillon0, nb_echantillon1;
 
     while( stop == 0 ) {//iterer jusqu'a => clusters ne bougent plus
         sum0 = 0;
@@ -114,7 +110,20 @@ int main(int argc, char *argv[])
             else
             x[i][j] =  0;
         }
+    //Estimer la variance des deux classe
+    for( i=0; i< (mean1 - mean0) / 2.0; i++ ) {
+        sum0 += VectHist[i] * SQUARE(i - mean0);
+        nb_echantillon0 += VectHist[i];
+    }
 
+    for( i=(mean1 - mean0) / 2.0; i <= 255 ; i++ ) {
+        sum1 += VectHist[i] * SQUARE(i - mean1);
+        nb_echantillon1 += VectHist[i];
+    }
+    var0 = sum0 / nb_echantillon0;
+    var1 = sum1 / nb_echantillon1;
+
+    printf("%s\n%f%s%f","Estimation des variances: ",var0,"  ",var1);
     /* Sauvegarde du champ d'etiquettes */
     SaveImagePgm(NAME_IMG_OUT, x, length, width);
 
