@@ -39,10 +39,10 @@ int main(int argc, char *argv[])
   float*  VectHist;
 
  
- 	if(argc<2){
-		printf("Usage :\n\t TpIFT6150-4-A image_a_segmenter\n\n");
-		return 0;
-	}
+  if(argc<2){
+    printf("Usage :\n\t TpIFT6150-4-A image_a_segmenter\n\n");
+    return 0;
+  }
   /*y= image passee en argument*/
   /* Ouvrir l'image d'entree */
   y = LoadImagePgm(argv[argc - 1], &length, &width);
@@ -75,5 +75,5 @@ int main(int argc, char *argv[])
   /*retour sans probleme*/ 
   printf("\n C'est fini ... \n\n\n");
   return 0;    
-  	 
+     
 }
